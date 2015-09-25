@@ -16,15 +16,15 @@ namespace Galaxy.Environments.Actors
   {
     #region Constant
 
-    private const int MaxSpeed = 3;
-    private const long StartFlyMs = 2000;
+    public const int MaxSpeed = 2;
+    private const long StartFlyMs = 1000;
 
     #endregion
 
     #region Private fields
 
-    private bool m_flying;
-    private Stopwatch m_flyTimer;
+    public bool m_flying;
+    public Stopwatch m_flyTimer;
 
     #endregion
 
@@ -43,9 +43,9 @@ namespace Galaxy.Environments.Actors
 
     public override void Update()
     {
-      base.Update();
+            base.Update();
 
-      if (!IsAlive)
+        if (!IsAlive)
         return;
 
       if (!m_flying)

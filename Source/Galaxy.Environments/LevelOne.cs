@@ -31,13 +31,13 @@ namespace Galaxy.Environments
 
       // Enemies
       for (int i = 0; i < 5; i++)
-      {
-        var shar = new Ships(this);
-        int positionYY = shar.Height + 50;
-        int positionXX = 200 + i * (shar.Width + 50);
+      {        
         var ship = new Ship(this);
         int positionY = ship.Height + 10;
         int positionX = 150 + i * (ship.Width + 50);
+        var shar = new Ships();
+        int positionYY = shar.Height + 50;
+        int positionXX = 200 + i * (shar.Width + 50);
 
         ship.Position = new Point(positionX, positionY);
         shar.Position = new Point(positionXX, positionYY);
