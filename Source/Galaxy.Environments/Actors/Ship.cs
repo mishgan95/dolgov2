@@ -16,15 +16,15 @@ namespace Galaxy.Environments.Actors
   {
     #region Constant
 
-    public const int MaxSpeed = 2;
+    private const int MaxSpeed = 2;
     private const long StartFlyMs = 1000;
 
     #endregion
 
     #region Private fields
 
-    public bool m_flying;
-    public Stopwatch m_flyTimer;
+    private bool m_flying;
+    protected Stopwatch m_flyTimer;
 
     #endregion
 

@@ -14,7 +14,17 @@ namespace Galaxy.Environments.Actors
 {
     public class Ships : Ship
     {
+        public Ships(ILevelInfo info):base(info)
+    {
+            Width = 30;
+            Height = 30;
+            ActorType = ActorType.Enemy;
+        }
 
+        public override void Load()
+        {
+            base.Load();
+            Load(@"Assets\shar.jpg");
+        }
     }
-
 }

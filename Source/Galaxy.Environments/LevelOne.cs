@@ -35,7 +35,7 @@ namespace Galaxy.Environments
         var ship = new Ship(this);
         int positionY = ship.Height + 10;
         int positionX = 150 + i * (ship.Width + 50);
-        var shar = new Ships();
+        var shar = new Ships(this);
         int positionYY = shar.Height + 50;
         int positionXX = 200 + i * (shar.Width + 50);
 
