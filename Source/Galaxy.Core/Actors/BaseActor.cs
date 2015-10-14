@@ -27,7 +27,7 @@ namespace Galaxy.Core.Actors
       set
       {
         m_isAlive = value;
-        CanDrop = value;
+        CanDrop = !value;
       }
     }
 

@@ -47,7 +47,7 @@
     <Compile Include="Actors\Player.cs" />
     <Compile Include="Actors\Ship.cs" />
     <Compile Include="Actors\Bullet.cs" />
-    <Compile Include="Actors\Ships.cs" />
+    <Compile Include="Actors\RedShip.cs" />
     <Compile Include="LevelOne.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,15 +61,14 @@
     <Content Include="Assets\bullet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\greenship.png" />
     <Content Include="Assets\LevelOne.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\player.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\shar.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Assets\redship.png" />
     <Content Include="Assets\ship.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

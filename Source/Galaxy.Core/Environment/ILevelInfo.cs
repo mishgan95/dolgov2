@@ -1,10 +1,11 @@
+using Galaxy.Core.Actors;
 using System.Drawing;
 
 namespace Galaxy.Core.Environment
 {
-  public interface ILevelInfo
-  {
-    Point GetPlayerPosition();
-    Size GetLevelSize();
-  }
+    public interface ILevelInfo
+    {
+        Point GetPlayerPosition();
+        Size GetLevelSize();
+    }
 }
