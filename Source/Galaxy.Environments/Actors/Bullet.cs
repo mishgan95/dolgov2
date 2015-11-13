@@ -9,6 +9,9 @@ using System.Drawing;
 
 namespace Galaxy.Environments.Actors
 {
+    /// <summary>
+    /// Базовая пуля, которая летит вертикально.
+    /// </summary>
     public class Bullet : BaseActor
     {
         #region Constant
@@ -18,22 +21,30 @@ namespace Galaxy.Environments.Actors
         #endregion
 
         #region Constructors
-
+        /// <summary>
+        /// Базовый конструктор пульки.
+        /// </summary>
+        /// <param name="info">Информация о уровне.</param>
+        /// <param name="owner">Тот актер, кто выстрелил данной пулей.</param>
         public Bullet(ILevelInfo info, BaseActor owner) : base(info)
         {
             Width = 3;
-            Height = 6;
-            ActorType = owner.ActorType;
-            Point point = new Point();
-            point.X = owner.Position.X + owner.Width / 2;
-            point.Y = owner.Position.Y;
-            switch (ActorType)
+            Height = 6; 
+            var point = new Point(); // создадим точку для начальной позиции пули
+            point.X = owner.Position.X + owner.Width / 2; // пуля по X должна быть посередине стреляющего
+            point.Y = owner.Position.Y; // установим позицию по Y равную позиции стреляющего
+            // но если стреляющим является враг
+            switch (owner.ActorType)
             {
+                case ActorType.Player:
+                    ActorType = ActorType.PlayerWeapon;
+                    break;
                 case ActorType.Enemy:
-                    point.Y += owner.Height;
+                    ActorType = ActorType.EnemyWeapon;
+                    point.Y += owner.Height; // добавим к позицию по Y высоту стреляющего
                     break;
             }
-            Position = point;
+            Position = point; // установим позицию пули равную ранее полученной точке
         }
 
         #endregion
@@ -50,18 +61,20 @@ namespace Galaxy.Environments.Actors
             int y = Position.Y;
             switch (ActorType)
             {
-                case ActorType.Player:
-                    y -= Speed;
+                case ActorType.PlayerWeapon: 
+                    y -= Speed; 
                     break;
-                case ActorType.Enemy:
-                    y += Speed;
+                case ActorType.EnemyWeapon: 
+                    y += Speed; 
                     break;
                 default:
                     throw new NotImplementedException();
             }
+            /// Проверяем, не вылезает ли пуля за пределы карты
+            if (y < 0 
+                || y > Info.GetLevelSize().Height) 
+                CanDrop = true; 
             Position = new Point(Position.X, y);
-            if (y < 0 || y > Info.GetLevelSize().Height)
-                CanDrop = true;
         }
 
         #endregion

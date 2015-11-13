@@ -1,10 +1,9 @@
 ﻿#region using
 
-using System;
-using System.Diagnostics;
-using System.Windows;
 using Galaxy.Core.Actors;
 using Galaxy.Core.Environment;
+using System.Diagnostics;
+using System.Windows;
 using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
 
@@ -12,6 +11,9 @@ using Size = System.Drawing.Size;
 
 namespace Galaxy.Environments.Actors
 {
+    /// <summary>
+    /// Класс для представления базового вражеского корабля. Зеленый.
+    /// </summary>
     public class Ship : DethAnimationActor
     {
         #region Constant
@@ -25,13 +27,28 @@ namespace Galaxy.Environments.Actors
 
         private bool m_flying;
         protected Stopwatch m_flyTimer;
-        protected Stopwatch m_shootTimer;
-        protected string m_image = @"Assets\greenship.png";
-        protected int m_shootInterval = 2000;
+        protected Stopwatch m_shootTimer; // счетчик времени для стрельбы
+        private string m_image; 
+        private int m_shootInterval; 
+
+        protected string ImageName
+        {
+            get { return m_image; }
+            set { m_image = value; }
+        }
+
+        protected int ShootInterval
+        {
+            get { return m_shootInterval; }
+            set { m_shootInterval = value; }
+        }
 
         #endregion
 
         #region Public properties
+        /// <summary>
+        /// Может ли корабль стрелять.
+        /// </summary>
         public bool CanShoot { get; protected set; }
         #endregion
 
@@ -42,6 +59,8 @@ namespace Galaxy.Environments.Actors
             Width = 40;
             Height = 30;
             ActorType = ActorType.Enemy;
+            ImageName = @"Assets\greenship.png";
+            ShootInterval = 2000;
         }
 
         #endregion
@@ -66,7 +85,9 @@ namespace Galaxy.Environments.Actors
                 }
             }
             else h_changePosition();
+            /// Проверяем стрельбу
             if (!CanShoot)
+                // проверяем, перезарядился ли он
                 if (m_shootTimer.ElapsedMilliseconds > m_shootInterval)
                 {
                     m_shootTimer.Stop();
@@ -74,9 +95,13 @@ namespace Galaxy.Environments.Actors
                     CanShoot = true;
                 }
         }
+        /// <summary>
+        /// Провести выстрел.
+        /// </summary>
+        /// <returns>Пуля, выпущенная данным кораблем.</returns>
         public Bullet Shoot()
         {
-            h_startShootTimer();
+            h_startShootTimer(); // запуск счетчика перезарядки
             var bullet = new Bullet(Info, this);
             bullet.Load();
             return bullet;
@@ -100,12 +125,15 @@ namespace Galaxy.Environments.Actors
         #endregion
 
         #region Private methods
+        /// <summary>
+        /// Запустить счетчик перезарядки
+        /// </summary>
         private void h_startShootTimer()
         {
             if (m_shootTimer == null)
             {
-                CanShoot = false;
-                m_shootTimer = new Stopwatch();
+                CanShoot = false; 
+                m_shootTimer = new Stopwatch(); 
                 m_shootTimer.Start();
             }
         }

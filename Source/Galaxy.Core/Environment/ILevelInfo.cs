@@ -1,4 +1,3 @@
-using Galaxy.Core.Actors;
 using System.Drawing;
 
 namespace Galaxy.Core.Environment

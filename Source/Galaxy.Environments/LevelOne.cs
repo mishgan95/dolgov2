@@ -1,12 +1,12 @@
 ﻿#region using
 
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using Galaxy.Core.Actors;
 using Galaxy.Core.Collision;
 using Galaxy.Core.Environment;
 using Galaxy.Environments.Actors;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 #endregion
 
@@ -30,19 +30,22 @@ namespace Galaxy.Environments
             FileName = @"Assets\LevelOne.png";
 
             // Enemies
-            int positionX, positionY;
-            for (int i = 0; i < 5; i++)
-            {
-                var ship = new Ship(this);
-                positionY = ship.Height + 10;
-                positionX = 150 + i * (ship.Width + 50);
-                ship.Position = new Point(positionX, positionY);
-                
-                var redship = new RedShip(this);
-                positionY = redship.Height + 50;
-                positionX = 100 + i * (redship.Width + 50);
-                redship.Position = new Point(positionX, positionY);
+            // Добавление на уровень врагов
+            int positionX, positionY; 
 
+            for (int i = 0; i < 5; i++) 
+            {
+               
+                var ship = new Ship(this);
+                positionY = ship.Height + 10; 
+                positionX = 150 + i * (ship.Width + 50); 
+                ship.Position = new Point(positionX, positionY); 
+                
+                var redship = new RedShip(this); 
+                positionY = redship.Height + 50; 
+                positionX = 100 + i * (redship.Width + 50); 
+                redship.Position = new Point(positionX, positionY); 
+                
                 Actors.Add(ship);
                 Actors.Add(redship);
             }
@@ -61,17 +64,37 @@ namespace Galaxy.Environments
 
         private void h_dispatchKey()
         {
-            if (m_frameCount % 10 == 0)
+            
+            if (m_frameCount % 10 == 0) 
             {
-                var enemies = Actors.OfType<Ship>().Where(p => p.ActorType == ActorType.Enemy && p.CanShoot).ToArray();
+                var enemies = new List<Ship>();
+                for (int i = 0; i < Actors.Count; i++)
+                {
+                    if (Actors[i].ActorType == ActorType.Enemy && Actors[i] is Ship)
+                        enemies.Add(
+                            (Ship)Actors[i]); // приводим объект типа BaseActor к типу Ship
+                }
+                /// Выстрелим
                 foreach (var enemy in enemies)
-                    Actors.Add(enemy.Shoot());
+                    if (enemy.CanShoot)
+                        Actors.Add( // добавляем в коллекцию актеров уровня, чтобы пуля обрабатывалась движком
+                            enemy.Shoot());
             }
-            if (!IsPressed(VirtualKeyStates.Space)) return;
+            /// Атака игрока
 
-            //if (m_frameCount % 10 != 0) return;
-            if (!Actors.Any(p => p.GetType() == typeof(Bullet) && p.ActorType == ActorType.Player))
+            if (!IsPressed(VirtualKeyStates.Space)) return; 
+            /// Выстрелить он сможет, если на уровне нет его пули
+            bool isPlayerCanShoot = true;
+            for (int i = 0; i < Actors.Count; i++)
+                if (Actors[i] is Bullet && Actors[i].ActorType == ActorType.PlayerWeapon)
+                {
+                    isPlayerCanShoot = false;
+                    break;
+                }
+
+            if (isPlayerCanShoot)
             {
+                /// Стреляем
                 var bullet = new Bullet(this, Player);
                 bullet.Load();
                 Actors.Add(bullet);
@@ -88,24 +111,27 @@ namespace Galaxy.Environments
         {
             m_frameCount++;
             h_dispatchKey();
-
+            
             base.Update();
-
-            var killedActors = CollisionChecher.GetAllCollisions(Actors).Where(p => p.IsAlive).ToList();
-
-            foreach (var killedActor in killedActors)
-                killedActor.IsAlive = false;
-
-            List<BaseActor> canDropActors = Actors.Where(actor => actor.CanDrop).ToList();
-
-            foreach (var actor in canDropActors)
-                Actors.Remove(actor);
+            // получим всех актеров, которые будут мертвы
+            var killedActors = CollisionChecher.GetAllCollisions(Actors);
+            foreach (var killedActor in killedActors) // для каждого умирающего актера
+                if (killedActor.IsAlive)
+                    killedActor.IsAlive = false; // установим, что он мертв
+            // удалим из коллекции актеров уровня
+            var allActors = Actors.ToArray();
+            foreach (var actor in allActors)
+                if (actor.CanDrop)
+                    Actors.Remove(actor);
 
             if (Player.CanDrop)
                 Failed = true;
 
-            if (Actors.All(actor => actor.ActorType != ActorType.Enemy))
-                Success = true;
+            foreach (var actor in Actors)
+                if (actor.ActorType == ActorType.Enemy)
+                    return;
+
+            Success = true;
         }
 
         #endregion

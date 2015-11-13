@@ -45,6 +45,10 @@ namespace Galaxy.Environments.Actors
                 Position = new Point(Position.X - Speed, Position.Y);
             if (IsPressed(VirtualKeyStates.Right))
                 Position = new Point(Position.X + Speed, Position.Y);
+            if (IsPressed(VirtualKeyStates.Up))
+                Position = new Point(Position.X, Position.Y - Speed);
+            if (IsPressed(VirtualKeyStates.Down))
+                Position = new Point(Position.X, Position.Y + Speed);
         }
 
         #endregion

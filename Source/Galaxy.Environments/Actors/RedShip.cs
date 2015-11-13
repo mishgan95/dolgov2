@@ -6,12 +6,19 @@ using Galaxy.Core.Environment;
 
 namespace Galaxy.Environments.Actors
 {
+    /// <summary>
+    /// Класс для представления вражеского корабля. Красненький.
+    /// </summary>
     public class RedShip : Ship
     {
+        /// <summary>
+        /// Базовый конструктор корабля.
+        /// </summary>
+        /// <param name="info">Информация об уровне.</param>
         public RedShip(ILevelInfo info) : base(info)
         {
-            m_image = @"Assets\redship.png";
-            m_shootInterval = 1000;
+            ImageName = @"Assets\redship.png";
+            ShootInterval = 1000;
         }
     }
 }
