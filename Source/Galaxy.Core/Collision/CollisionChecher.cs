@@ -13,13 +13,26 @@ namespace Galaxy.Core.Collision
     {
         #region Static Public methods
 
-        public static IEnumerable<BaseActor> GetAllCollisions(List<BaseActor> allActors)//возвращает умершие актеры
+        private static List<ActorType[]> Teams
+        {
+            get
+            {
+                return new List<ActorType[]>
+                {
+                    new ActorType[] {ActorType.Player, ActorType.PlayerWeapon},
+                    new ActorType[] {ActorType.Enemy, ActorType.EnemyWeapon},
+                    new ActorType[] {ActorType.Light, ActorType.LightWeapon}
+                };
+            }
+        }
+
+        public static IEnumerable<BaseActor> GetAllCollisions(List<BaseActor> allActors)
         {
             List<BaseActor> collided = new List<BaseActor>();
             foreach (BaseActor actor in allActors)
             {
                 var actorTmp = actor;
-                collided.AddRange(allActors.Where(baseActor => h_collideCondition(baseActor, actorTmp)));//запоминает умерших актеров.
+                collided.AddRange(allActors.Where(baseActor => h_collideCondition(baseActor, actorTmp)));
             }
 
             return collided;
@@ -29,15 +42,39 @@ namespace Galaxy.Core.Collision
 
         #region Private methods
 
-        private static bool h_collideCondition(BaseActor baseActor, BaseActor actorTmp) //Проверяет на касание актеров разных команд, если каснулись - умерли возвращают true, если не каснулись то false
+        private static bool h_collideCondition(BaseActor baseActor, BaseActor actorTmp)
         {
-            var teamPlayer = new ActorType[] { ActorType.Player, ActorType.PlayerWeapon };
-            // Contains показывает, содержит ли  коллекция teamPlayer тип актера baseActor.ActorType
-            var isBaseActorPlayer = teamPlayer.Contains(baseActor.ActorType);
-            // Contains показывает, содержит ли  коллекция teamPlayer тип актера actorTmp.ActorType
-            var isActorTmpPlayer = teamPlayer.Contains(actorTmp.ActorType);
+            var teams = Teams;
+            bool finded = false;
+            int index;
+            for (index = 0; index < teams.Count; index++)
+            {
+                for (int i = 0; i < teams[index].Length; i++)
+                {
+                    if (baseActor.ActorType == teams[index][i])
+                    {
+                        finded = true;
+                        break;
+                    }
+                }
+                if (finded)
+                {
+                    break;
+                }
+            }
+
+            bool issameteam = false;
+    
+            for (int i = 0; i < teams[index].Length; i++) 
+            {
+                if (actorTmp.ActorType == teams[index][i])
+                {
+                    issameteam = true;
+                    break;
+                }
+            }
             return baseActor != actorTmp
-                   && isBaseActorPlayer != isActorTmpPlayer
+                   && issameteam == false
                    && h_collidedWith(actorTmp, baseActor);
         }
 
@@ -57,7 +94,7 @@ namespace Galaxy.Core.Collision
                 rectangle2 = new Rectangle(actorX, actorY, actor2.Width, actor2.Height);
             }
 
-            return rectangle1.IntersectsWith(rectangle2);//проверяет столкнулись или нет
+            return rectangle1.IntersectsWith(rectangle2);
         }
 
         #endregion

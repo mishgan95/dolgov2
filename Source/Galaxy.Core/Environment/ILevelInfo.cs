@@ -6,5 +6,6 @@ namespace Galaxy.Core.Environment
     {
         Point GetPlayerPosition();
         Size GetLevelSize();
+        bool HasPlayerBullet();
     }
 }

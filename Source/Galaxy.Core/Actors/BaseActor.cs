@@ -27,12 +27,9 @@ namespace Galaxy.Core.Actors
             set
             {
                 m_isAlive = value;
-                CanDrop = !value;
+                CanDrop = !value; 
             }
         }
-        /// <summary>
-        /// Свойство, показывающее, что данный актер может быть удален с уровня.
-        /// </summary>
         public bool CanDrop { get; protected set; }
 
         #endregion
@@ -66,11 +63,10 @@ namespace Galaxy.Core.Actors
         public bool IsPressed(VirtualKeyStates key)
         {
             var isPressed = KeyState.IsPressed(key);
-            
             return isPressed;
         }
 
-        public virtual void Update()//актеры не выходят за пределы карты
+        public virtual void Update()
         {
             Size levelSize = Info.GetLevelSize();
 

@@ -35,5 +35,9 @@ namespace Galaxy.Core.Environment
       return (BaseLevel) Activator.CreateInstance(LevelOne);
     }
 
-  }
+        public override bool HasPlayerBullet()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

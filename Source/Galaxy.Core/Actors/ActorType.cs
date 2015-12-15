@@ -4,7 +4,9 @@
     {
         Player,
         Enemy,
+        Light,
         PlayerWeapon,
-        EnemyWeapon
+        EnemyWeapon,
+        LightWeapon
     }
 }

@@ -2,6 +2,8 @@
 
 #endregion
 
+using System;
+
 namespace Galaxy.Core.Environment
 {
   public class FailScreen : BaseLevel
@@ -29,6 +31,11 @@ namespace Galaxy.Core.Environment
       return new StartScreen();
     }
 
-    #endregion
-  }
+        public override bool HasPlayerBullet()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

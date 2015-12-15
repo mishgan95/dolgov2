@@ -1,5 +1,6 @@
 ﻿#region using
 
+using System;
 using System.Drawing;
 using Galaxy.Core.Actors;
 using Galaxy.Core.Environment;
@@ -8,7 +9,7 @@ using Galaxy.Core.Environment;
 
 namespace Galaxy.Environments.Actors
 {
-    public class PlayerShip : DethAnimationActor
+    public class PlayerShip : DethAnimationActor, IShootable
     {
         #region Constant
 
@@ -26,6 +27,16 @@ namespace Galaxy.Environments.Actors
             ActorType = ActorType.Player;
         }
 
+        public bool CanShoot
+        {
+            get
+            {
+                if (!IsPressed(VirtualKeyStates.Space)) return false;
+                return Info.HasPlayerBullet() == false;
+            }
+        }        
+      
+
         #endregion
 
         #region Overrides
@@ -33,6 +44,13 @@ namespace Galaxy.Environments.Actors
         public override void Load()
         {
             Load(@"Assets\player.png");
+        }
+
+        public BaseActor Shoot()
+        {     
+                var bullet = new PlayerBullet(Info, this); 
+                bullet.Load(); 
+                return bullet;            
         }
 
         #region Overrides of DethAnimationActor

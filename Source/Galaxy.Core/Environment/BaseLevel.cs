@@ -117,6 +117,8 @@ namespace Galaxy.Core.Environment
             return Size;
         }
 
+        public abstract bool HasPlayerBullet();        
+
         protected BaseActor Player { get; set; }
 
         #endregion

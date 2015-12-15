@@ -26,36 +26,37 @@ namespace Galaxy.Environments
         /// </summary>
         public LevelOne()
         {
-            // Backgrounds
             FileName = @"Assets\LevelOne.png";
 
-            // Enemies
-            // Добавление на уровень врагов
-            int positionX, positionY; 
+            int positionX, positionY;
 
-            for (int i = 0; i < 5; i++) 
+            for (int i = 0; i < 5; i++)
             {
-               
-                var ship = new Ship(this);
+                var ship = new Ship(this); 
                 positionY = ship.Height + 10; 
-                positionX = 150 + i * (ship.Width + 50); 
-                ship.Position = new Point(positionX, positionY); 
-                
+                positionX = 150 + i * (ship.Width + 50);
+                ship.Position = new Point(positionX, positionY);
+
                 var redship = new RedShip(this); 
                 positionY = redship.Height + 50; 
                 positionX = 100 + i * (redship.Width + 50); 
-                redship.Position = new Point(positionX, positionY); 
-                
+                redship.Position = new Point(positionX, positionY);
+
                 Actors.Add(ship);
                 Actors.Add(redship);
             }
 
-            // Player
             Player = new PlayerShip(this);
             int playerPositionX = Size.Width / 2 - Player.Width / 2;
             int playerPositionY = Size.Height - Player.Height - 50;
             Player.Position = new Point(playerPositionX, playerPositionY);
             Actors.Add(Player);
+
+            var lighting = new Lighting(this);
+            int PositionX = Size.Width / 4 - lighting.Width / 2;
+            int PositionY = Size.Height / 2 - lighting.Height / 2;
+            lighting.Position = new Point(PositionX, PositionY);
+            Actors.Add(lighting);
         }
 
         #endregion
@@ -64,42 +65,20 @@ namespace Galaxy.Environments
 
         private void h_dispatchKey()
         {
-            
-            if (m_frameCount % 10 == 0) 
+            var shootable = new List<IShootable>();
+            foreach (var actor in Actors)
             {
-                var enemies = new List<Ship>();
-                for (int i = 0; i < Actors.Count; i++)
+                if (actor is IShootable)
                 {
-                    if (Actors[i].ActorType == ActorType.Enemy && Actors[i] is Ship)
-                        enemies.Add(
-                            (Ship)Actors[i]); // приводим объект типа BaseActor к типу Ship
+                    shootable.Add((IShootable)actor);
                 }
-                /// Выстрелим
-                foreach (var enemy in enemies)
-                    if (enemy.CanShoot)
-                        Actors.Add( // добавляем в коллекцию актеров уровня, чтобы пуля обрабатывалась движком
-                            enemy.Shoot());
-            }
-            /// Атака игрока
-
-            if (!IsPressed(VirtualKeyStates.Space)) return; 
-            /// Выстрелить он сможет, если на уровне нет его пули
-            bool isPlayerCanShoot = true;
-            for (int i = 0; i < Actors.Count; i++)
-                if (Actors[i] is Bullet && Actors[i].ActorType == ActorType.PlayerWeapon)
-                {
-                    isPlayerCanShoot = false;
-                    break;
-                }
-
-            if (isPlayerCanShoot)
-            {
-                /// Стреляем
-                var bullet = new Bullet(this, Player);
-                bullet.Load();
-                Actors.Add(bullet);
             }
 
+            foreach (var actor in shootable)
+            {
+                if (actor.CanShoot)
+                    Actors.Add(actor.Shoot());
+            }
         }
 
         public override BaseLevel NextLevel()
@@ -113,12 +92,12 @@ namespace Galaxy.Environments
             h_dispatchKey();
             
             base.Update();
-            // получим всех актеров, которые будут мертвы
+
             var killedActors = CollisionChecher.GetAllCollisions(Actors);
-            foreach (var killedActor in killedActors) // для каждого умирающего актера
+            foreach (var killedActor in killedActors)
                 if (killedActor.IsAlive)
-                    killedActor.IsAlive = false; // установим, что он мертв
-            // удалим из коллекции актеров уровня
+                    killedActor.IsAlive = false;
+
             var allActors = Actors.ToArray();
             foreach (var actor in allActors)
                 if (actor.CanDrop)
@@ -126,12 +105,22 @@ namespace Galaxy.Environments
 
             if (Player.CanDrop)
                 Failed = true;
-
+            
             foreach (var actor in Actors)
                 if (actor.ActorType == ActorType.Enemy)
                     return;
 
             Success = true;
+        }
+
+        public override bool HasPlayerBullet()
+        {
+            for (int i = 0; i < Actors.Count; i++)
+                if (Actors[i].ActorType == ActorType.PlayerWeapon)
+                {
+                    return true;                   
+                }
+            return false;
         }
 
         #endregion

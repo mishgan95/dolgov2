@@ -36,7 +36,7 @@ namespace Galaxy.Core.Actors
       set
       {
         m_isAlive = value;
-        if (m_isAlive) return;//если жив - выход, если не жив запуск анимации
+        if (m_isAlive) return;
 
         m_dethAnimation = !value;
 
@@ -61,7 +61,7 @@ namespace Galaxy.Core.Actors
 
     private void h_checkDeth()
     {
-      if (m_dethAnimation && m_dethTimer.ElapsedMilliseconds > DethTimeMs)//если анимация идет и таймер больше время смерти 
+      if (m_dethAnimation && m_dethTimer.ElapsedMilliseconds > DethTimeMs)
       {
         CanDrop = true;
       }
