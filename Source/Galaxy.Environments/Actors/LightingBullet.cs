@@ -10,7 +10,6 @@ namespace Galaxy.Environments.Actors
 {
     public class LightingBullet : EnemyBullet
     {
-
         public LightingBullet(ILevelInfo info, BaseActor owner) : base (info, owner)
         {
             Speed = 20;
